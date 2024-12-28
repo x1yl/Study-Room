@@ -5,6 +5,14 @@ generator client {
     provider = "prisma-client-js"
 }
 
+model Room {
+    id          String   @id @default(cuid())
+    name        String
+    createdBy   User     @relation("RoomCreator", fields: [createdById], references: [id])
+    createdById String
+    members     User[]   @relation("RoomMembers")
+}
+
 datasource db {
     provider = "mysql"
     // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
@@ -34,11 +42,11 @@ model Account {
     provider                 String
     providerAccountId        String
     refresh_token            String? @db.Text
-    access_token             String? // @db.Text
+    access_token             String? @db.Text
     expires_at               Int?
     token_type               String?
     scope                    String?
-    id_token                 String? // @db.Text
+    id_token                 String? @db.Text
     session_state            String?
     user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     refresh_token_expires_in Int?
@@ -63,6 +71,8 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
+    createdRooms  Room[]   @relation("RoomCreator")
+    joinedRooms   Room[]   @relation("RoomMembers")
 }
 
 model VerificationToken {
