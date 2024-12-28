@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 type TimerMode = "pomodoro" | "shortBreak" | "longBreak";
 
 const TIMER_CONFIG = {
-  pomodoro: 1,
+  pomodoro: 25,
   shortBreak: 5,
   longBreak: 20,
 };
