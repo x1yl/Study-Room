@@ -7,15 +7,14 @@ import { AddMember } from "~/app/_components/add-member";
 import { MemberList } from "~/app/_components/member-list";
 import { AccessDenied } from "~/app/_components/access-denied";
 import { DeleteRoom } from "~/app/_components/delete-room";
+import { Chat } from "~/app/_components/chat";
 import { type Metadata } from "next";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
-export async function generateMetadata(
-  { params }: Props,
-): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
   const room = await api.room
     .getRoom({ roomId: resolvedParams.id })
@@ -62,6 +61,7 @@ export default async function RoomPage({
             {room.name} {isOwner && <DeleteRoom roomId={resolvedParams.id} />}
           </h1>
           <PomodoroTimer />
+          <Chat roomId={resolvedParams.id} />
           <div className="w-full max-w-md text-center">
             <h2 className="mb-4 text-2xl font-semibold">Members</h2>
             {isOwner && (

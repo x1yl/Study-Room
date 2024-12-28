@@ -263,4 +263,45 @@ export const roomRouter = createTRPCRouter({
         where: { id: input.roomId },
       });
     }),
+
+  sendMessage: protectedProcedure
+    .input(z.object({ roomId: z.string(), content: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      // Check if user is member of room
+      const room = await ctx.db.room.findFirst({
+        where: {
+          id: input.roomId,
+          OR: [
+            { createdById: ctx.session.user.id },
+            { members: { some: { id: ctx.session.user.id } } },
+          ],
+        },
+      });
+
+      if (!room) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You must be a member of this room to send messages",
+        });
+      }
+
+      return ctx.db.message.create({
+        data: {
+          content: input.content,
+          room: { connect: { id: input.roomId } },
+          user: { connect: { id: ctx.session.user.id } },
+        },
+      });
+    }),
+
+  getMessages: protectedProcedure
+    .input(z.object({ roomId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.message.findMany({
+        where: { roomId: input.roomId },
+        include: { user: true },
+        orderBy: { createdAt: "desc" },
+        take: 100,
+      });
+    }),
 });

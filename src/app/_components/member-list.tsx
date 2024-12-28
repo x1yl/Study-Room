@@ -27,12 +27,18 @@ export function MemberList({ roomId, members, isOwner }: MemberListProps) {
     {
       initialData: {
         id: roomId,
-        name: '',
-        createdById: members.find(m => m.isOwner)?.id ?? '',
+        name: "",
+        createdById: members.find((m) => m.isOwner)?.id ?? "",
         members: members.map(({ ...member }) => member),
-        createdBy: members.find(m => m.isOwner) ?? { id: '', name: '', email: '', emailVerified: null, image: '' }
-      }
-    }
+        createdBy: members.find((m) => m.isOwner) ?? {
+          id: "",
+          name: "",
+          email: "",
+          emailVerified: null,
+          image: "",
+        },
+      },
+    },
   );
 
   const removeMember = api.room.removeMember.useMutation({
