@@ -13,7 +13,7 @@ export function AddMember({ roomId }: { roomId: string }) {
       // Invalidate both room and userRooms queries
       await Promise.all([
         utils.room.getRoom.invalidate({ roomId }),
-        utils.room.getUserRooms.invalidate()
+        utils.room.getUserRooms.invalidate(),
       ]);
     },
     onError: (error) => {

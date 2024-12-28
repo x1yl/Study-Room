@@ -18,7 +18,11 @@ export function DeleteRoom({ roomId }: { roomId: string }) {
   });
 
   const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this room? This action cannot be undone.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this room? This action cannot be undone.",
+      )
+    ) {
       deleteRoom.mutate({ roomId });
     }
   };

@@ -10,16 +10,16 @@ export const roomRouter = createTRPCRouter({
         data: {
           name: input.name,
           createdBy: {
-            connect: { id: ctx.session.user.id }
+            connect: { id: ctx.session.user.id },
           },
           members: {
-            connect: { id: ctx.session.user.id }
-          }
+            connect: { id: ctx.session.user.id },
+          },
         },
         include: {
           members: true,
           createdBy: true,
-        }
+        },
       });
     }),
 
@@ -27,7 +27,7 @@ export const roomRouter = createTRPCRouter({
     .input(z.object({ roomId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const room = await ctx.db.room.findUnique({
-        where: { id: input.roomId }
+        where: { id: input.roomId },
       });
 
       if (!room) {
@@ -41,13 +41,13 @@ export const roomRouter = createTRPCRouter({
         where: { id: input.roomId },
         data: {
           members: {
-            connect: { id: ctx.session.user.id }
-          }
+            connect: { id: ctx.session.user.id },
+          },
         },
         include: {
           members: true,
           createdBy: true,
-        }
+        },
       });
     }),
 
@@ -83,21 +83,20 @@ export const roomRouter = createTRPCRouter({
       return room;
     }),
 
-  getUserRooms: protectedProcedure
-    .query(({ ctx }) => {
-      return ctx.db.room.findMany({
-        where: {
-          OR: [
-            { createdById: ctx.session.user.id },
-            { members: { some: { id: ctx.session.user.id } } }
-          ]
-        },
-        include: {
-          createdBy: true,
-          members: true,
-        }
-      });
-    }),
+  getUserRooms: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.room.findMany({
+      where: {
+        OR: [
+          { createdById: ctx.session.user.id },
+          { members: { some: { id: ctx.session.user.id } } },
+        ],
+      },
+      include: {
+        createdBy: true,
+        members: true,
+      },
+    });
+  }),
 
   autoJoin: protectedProcedure
     .input(z.object({ roomId: z.string() }))
@@ -128,25 +127,27 @@ export const roomRouter = createTRPCRouter({
         where: { id: input.roomId },
         data: {
           members: {
-            connect: { id: ctx.session.user.id }
-          }
+            connect: { id: ctx.session.user.id },
+          },
         },
         include: {
           members: true,
           createdBy: true,
-        }
+        },
       });
     }),
 
   addMember: protectedProcedure
-    .input(z.object({ 
-      roomId: z.string(),
-      username: z.string()
-    }))
+    .input(
+      z.object({
+        roomId: z.string(),
+        username: z.string(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       const room = await ctx.db.room.findUnique({
         where: { id: input.roomId },
-        include: { createdBy: true }
+        include: { createdBy: true },
       });
 
       if (!room) {
@@ -164,7 +165,7 @@ export const roomRouter = createTRPCRouter({
       }
 
       const userToAdd = await ctx.db.user.findFirst({
-        where: { name: input.username }
+        where: { name: input.username },
       });
 
       if (!userToAdd) {
@@ -178,25 +179,27 @@ export const roomRouter = createTRPCRouter({
         where: { id: input.roomId },
         data: {
           members: {
-            connect: { id: userToAdd.id }
-          }
+            connect: { id: userToAdd.id },
+          },
         },
         include: {
           members: true,
           createdBy: true,
-        }
+        },
       });
     }),
 
   removeMember: protectedProcedure
-    .input(z.object({ 
-      roomId: z.string(),
-      userId: z.string()
-    }))
+    .input(
+      z.object({
+        roomId: z.string(),
+        userId: z.string(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       const room = await ctx.db.room.findUnique({
         where: { id: input.roomId },
-        include: { createdBy: true }
+        include: { createdBy: true },
       });
 
       if (!room) {
@@ -224,13 +227,13 @@ export const roomRouter = createTRPCRouter({
         where: { id: input.roomId },
         data: {
           members: {
-            disconnect: { id: input.userId }
-          }
+            disconnect: { id: input.userId },
+          },
         },
         include: {
           members: true,
           createdBy: true,
-        }
+        },
       });
     }),
 
@@ -239,7 +242,7 @@ export const roomRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const room = await ctx.db.room.findUnique({
         where: { id: input.roomId },
-        include: { createdBy: true }
+        include: { createdBy: true },
       });
 
       if (!room) {
@@ -257,7 +260,7 @@ export const roomRouter = createTRPCRouter({
       }
 
       return ctx.db.room.delete({
-        where: { id: input.roomId }
+        where: { id: input.roomId },
       });
     }),
 });
