@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { api } from "~/trpc/react";
 
 export function Chat({ roomId }: { roomId: string }) {
   const [message, setMessage] = useState("");
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const utils = api.useUtils();
 
   const {
@@ -21,8 +22,15 @@ export function Chat({ roomId }: { roomId: string }) {
     },
   });
 
+  // Scroll to bottom when messages change or when chat is opened
+  useEffect(() => {
+    if (!isCollapsed && messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  }, [messages, isCollapsed]);
+
   return (
-    <div className="fixed bottom-4 right-4 w-96 rounded-lg bg-white/10 p-4 shadow-lg">
+    <div className="fixed bottom-4 right-4 w-full max-w-[calc(100%-2rem)] rounded-lg bg-white/10 p-4 shadow-lg sm:max-w-[360px] md:max-w-[384px]">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="truncate font-semibold">Chat</h3>
         <button
@@ -34,7 +42,10 @@ export function Chat({ roomId }: { roomId: string }) {
       </div>
 
       {!isCollapsed && (
-        <div className="mb-4 h-[400px] overflow-y-auto">
+        <div 
+          ref={messagesContainerRef} 
+          className="mb-4 h-[250px] overflow-y-auto sm:h-[300px] md:h-[400px]"
+        >
           <div className="flex flex-col-reverse gap-2">
             {messages?.map((msg) => (
               <div key={msg.id} className="break-words rounded bg-white/5 p-2">
@@ -61,13 +72,13 @@ export function Chat({ roomId }: { roomId: string }) {
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="flex-1 overflow-x-hidden rounded-lg bg-white/10 p-2 text-white"
+          className="flex-1 overflow-x-hidden rounded-lg bg-white/10 p-2 text-white text-sm sm:text-base"
           placeholder="Type a message..."
           maxLength={500} // Add a reasonable character limit
         />
         <button
           type="submit"
-          className="whitespace-nowrap rounded-lg bg-white/10 px-4 py-2 font-semibold hover:bg-white/20"
+          className="whitespace-nowrap rounded-lg bg-white/10 px-3 py-2 text-sm font-semibold hover:bg-white/20 sm:px-4 sm:text-base"
         >
           Send
         </button>
