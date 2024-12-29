@@ -25,7 +25,8 @@ export function Chat({ roomId }: { roomId: string }) {
   // Scroll to bottom when messages change or when chat is opened
   useEffect(() => {
     if (!isCollapsed && messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
     }
   }, [messages, isCollapsed]);
 
@@ -42,8 +43,8 @@ export function Chat({ roomId }: { roomId: string }) {
       </div>
 
       {!isCollapsed && (
-        <div 
-          ref={messagesContainerRef} 
+        <div
+          ref={messagesContainerRef}
           className="mb-4 h-[250px] overflow-y-auto sm:h-[300px] md:h-[400px]"
         >
           <div className="flex flex-col-reverse gap-2">
@@ -72,7 +73,7 @@ export function Chat({ roomId }: { roomId: string }) {
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="flex-1 overflow-x-hidden rounded-lg bg-white/10 p-2 text-white text-sm sm:text-base"
+          className="flex-1 overflow-x-hidden rounded-lg bg-white/10 p-2 text-sm text-white sm:text-base"
           placeholder="Type a message..."
           maxLength={500} // Add a reasonable character limit
         />

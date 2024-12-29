@@ -3,8 +3,6 @@ import { PomodoroTimer } from "~/app/_components/pomodoro-timer";
 import { auth } from "~/server/auth";
 import { api } from "~/trpc/server";
 import { HydrateClient } from "~/trpc/server";
-import { AddMember } from "~/app/_components/add-member";
-import { MemberList } from "~/app/_components/member-list";
 import { AccessDenied } from "~/app/_components/access-denied";
 import { DeleteRoom } from "~/app/_components/delete-room";
 import { Chat } from "~/app/_components/chat";
@@ -49,19 +47,13 @@ export default async function RoomPage({
   }
 
   const isOwner = room.createdBy.id === session.user.id;
-  const membersWithOwnerFlag = room.members.map((member) => ({
-    ...member,
-    isOwner: member.id === room.createdBy.id,
-  }));
 
   return (
     <HydrateClient>
       <main className="flex min-h-screen flex-col items-center justify-start bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
         <div className="container flex flex-col items-center gap-12 px-4 py-16">
           <div className="flex items-center gap-4">
-            <h1 className="text-4xl font-bold">
-              {room.name}
-            </h1>
+            <h1 className="text-4xl font-bold">{room.name}</h1>
             <MemberMenu roomId={resolvedParams.id} />
             {isOwner && <DeleteRoom roomId={resolvedParams.id} />}
           </div>
