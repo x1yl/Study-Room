@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: room ? `${room.name} - Study Room` : "Study Room",
     icons: {
-      icon: "/favicon.png",
+      icon: "/favicon.ico",
     },
   };
 }
