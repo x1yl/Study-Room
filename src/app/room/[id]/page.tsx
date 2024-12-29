@@ -62,9 +62,9 @@ export default async function RoomPage({
               <LeaveRoom roomId={resolvedParams.id} />
             )}
           </div>
-          <PomodoroTimer />
           <Chat roomId={resolvedParams.id} />
         </div>
+        <PomodoroTimer />
       </main>
     </HydrateClient>
   );
