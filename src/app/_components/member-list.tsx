@@ -22,28 +22,9 @@ interface MemberListProps {
 
 export function MemberList({ roomId, members, isOwner }: MemberListProps) {
   const utils = api.useUtils();
-  const { data: currentRoom } = api.room.getRoom.useQuery(
-    { roomId },
-    {
-      initialData: {
-        id: roomId,
-        name: "",
-        createdById: members.find((m) => m.isOwner)?.id ?? "",
-        members: members.map(({ ...member }) => member),
-        createdBy: members.find((m) => m.isOwner) ?? {
-          id: "",
-          name: "",
-          email: "",
-          emailVerified: null,
-          image: "",
-        },
-      },
-    },
-  );
 
   const removeMember = api.room.removeMember.useMutation({
     onSuccess: async () => {
-      // Invalidate both room and userRooms queries
       await Promise.all([
         utils.room.getRoom.invalidate({ roomId }),
         utils.room.getUserRooms.invalidate(),
@@ -56,13 +37,13 @@ export function MemberList({ roomId, members, isOwner }: MemberListProps) {
 
   return (
     <div className="flex flex-wrap justify-center gap-2">
-      {currentRoom?.members.map((member) => (
+      {members.map((member) => (
         <div
           key={member.id}
           className="flex items-center gap-2 rounded-full bg-white/10 px-3 py-1"
         >
           <span>{member.name}</span>
-          {isOwner && member.id !== currentRoom.createdBy.id && (
+          {isOwner && !member.isOwner && (
             <button
               onClick={() => {
                 if (window.confirm(`Remove ${member.name} from the room?`)) {

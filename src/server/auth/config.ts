@@ -32,7 +32,26 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [
-    DiscordProvider,
+    DiscordProvider({
+      profile(profile) {
+        if (profile.avatar === null) {
+          const defaultAvatarNumber =
+            profile.discriminator === "0"
+              ? Number(BigInt(profile.id) >> BigInt(22)) % 6
+              : parseInt(profile.discriminator) % 5
+          profile.image_url = `https://cdn.discordapp.com/embed/avatars/${defaultAvatarNumber}.png`
+        } else {
+          const format = profile.avatar.startsWith("a_") ? "gif" : "png"
+          profile.image_url = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.${format}`
+        }
+        return {
+          id: profile.id,
+          name: profile.username,
+          email: profile.email,
+          image: profile.image_url,
+        }
+      },
+    }),
     /**
      * ...add more providers here.
      *
