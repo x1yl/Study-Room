@@ -8,6 +8,7 @@ import { DeleteRoom } from "~/app/_components/delete-room";
 import { Chat } from "~/app/_components/chat";
 import { type Metadata } from "next";
 import { MemberMenu } from "~/app/_components/member-menu";
+import { LeaveRoom } from "~/app/_components/leave-room";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -55,7 +56,11 @@ export default async function RoomPage({
           <div className="flex items-center gap-4">
             <h1 className="text-4xl font-bold">{room.name}</h1>
             <MemberMenu roomId={resolvedParams.id} />
-            {isOwner && <DeleteRoom roomId={resolvedParams.id} />}
+            {isOwner ? (
+              <DeleteRoom roomId={resolvedParams.id} />
+            ) : (
+              <LeaveRoom roomId={resolvedParams.id} />
+            )}
           </div>
           <PomodoroTimer />
           <Chat roomId={resolvedParams.id} />

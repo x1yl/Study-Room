@@ -209,14 +209,21 @@ export const roomRouter = createTRPCRouter({
         });
       }
 
-      if (room.createdById !== ctx.session.user.id) {
+      const userId =
+        input.userId === "self" ? ctx.session.user.id : input.userId;
+
+      // Allow self-removal or owner removal
+      if (
+        userId !== ctx.session.user.id &&
+        room.createdById !== ctx.session.user.id
+      ) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "Only room owner can remove members",
+          message: "Only room owner can remove other members",
         });
       }
 
-      if (input.userId === room.createdById) {
+      if (userId === room.createdById) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Cannot remove room owner",
@@ -227,7 +234,7 @@ export const roomRouter = createTRPCRouter({
         where: { id: input.roomId },
         data: {
           members: {
-            disconnect: { id: input.userId },
+            disconnect: { id: userId },
           },
         },
         include: {

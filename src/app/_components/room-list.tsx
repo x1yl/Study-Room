@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { api } from "~/trpc/react";
 import { DeleteRoom } from "./delete-room";
+import { LeaveRoom } from "./leave-room";
 
-export function RoomList() {
+export function RoomList({ userId }: { userId: string }) {
   const { data: rooms, isLoading } = api.room.getUserRooms.useQuery();
-
   if (isLoading) return <div>Loading rooms...</div>;
   if (!rooms?.length) return <div>No rooms found.</div>;
 
@@ -25,8 +25,10 @@ export function RoomList() {
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-semibold">{room.name}</h3>
-                {room.createdBy.id === room.members[0]?.id && (
+                {room.createdBy.id === userId ? (
                   <DeleteRoom roomId={room.id} />
+                ) : (
+                  <LeaveRoom roomId={room.id} />
                 )}
               </div>
 

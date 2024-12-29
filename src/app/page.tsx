@@ -43,7 +43,7 @@ export default async function Home() {
                   <JoinRoom />
                 </div>
               </div>
-              <RoomList />
+              <RoomList userId={session.user.id} />
             </div>
           )}
         </div>
