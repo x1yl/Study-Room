@@ -62,7 +62,7 @@ export const authConfig = {
       authorization: {
         params: {
           scope:
-            "https://www.googleapis.com/auth/calendar.readonly openid email profile",
+            "https://www.googleapis.com/auth/calendar openid profile email",
         },
       },
     }),
