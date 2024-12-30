@@ -1,6 +1,7 @@
 import { postRouter } from "~/server/api/routers/post";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { roomRouter } from "~/server/api/routers/room";
+import { calendarRouter } from "~/server/api/routers/calendar";
 
 /**
  * This is the primary router for your server.
@@ -10,6 +11,7 @@ import { roomRouter } from "~/server/api/routers/room";
 export const appRouter = createTRPCRouter({
   post: postRouter,
   room: roomRouter,
+  calendar: calendarRouter,
 });
 
 // export type definition of API

@@ -9,6 +9,7 @@ import { Chat } from "~/app/_components/chat";
 import { type Metadata } from "next";
 import { MemberMenu } from "~/app/_components/member-menu";
 import { LeaveRoom } from "~/app/_components/leave-room";
+import { CalendarWidget } from "~/app/_components/calendar-widget";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -51,7 +52,7 @@ export default async function RoomPage({
 
   return (
     <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-start bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+      <main className="flex flex-col items-center justify-start text-white">
         <div className="container flex flex-col items-center gap-12 px-4 py-16">
           <div className="flex items-center gap-4">
             <h1 className="text-4xl font-bold">{room.name}</h1>
@@ -63,6 +64,7 @@ export default async function RoomPage({
             )}
           </div>
           <Chat roomId={resolvedParams.id} />
+          <CalendarWidget />
         </div>
         <PomodoroTimer />
       </main>

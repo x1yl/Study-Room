@@ -51,6 +51,7 @@ model Account {
     session_state            String?
     user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     refresh_token_expires_in Int?
+    google_calendar_tokens   Json?   @db.Json
 
     @@unique([provider, providerAccountId])
 }
