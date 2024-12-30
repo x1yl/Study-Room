@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback, type MouseEvent } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  type MouseEvent,
+} from "react";
 
 type TimerMode = "pomodoro" | "shortBreak" | "longBreak";
 
@@ -11,6 +17,7 @@ const TIMER_CONFIG = {
 };
 
 export function PomodoroTimer() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 20, y: 20 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -85,11 +92,25 @@ export function PomodoroTimer() {
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
-      if (isDragging) {
-        setPosition({
-          x: e.clientX - dragOffset.x,
-          y: e.clientY - dragOffset.y,
-        });
+      if (isDragging && containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        let newX = e.clientX - dragOffset.x;
+        let newY = e.clientY - dragOffset.y;
+
+        if (newX < 0) newX = 0;
+        if (newX + rect.width > viewportWidth) {
+          newX = viewportWidth - rect.width;
+        }
+
+        if (newY < 0) newY = 0;
+        if (newY + rect.height > viewportHeight) {
+          newY = viewportHeight - rect.height;
+        }
+
+        setPosition({ x: newX, y: newY });
       }
     },
     [isDragging, dragOffset],
@@ -121,7 +142,7 @@ export function PomodoroTimer() {
     return (
       <button
         onClick={() => setIsVisible(true)}
-        className="fixed top-4 left-4 rounded-full bg-white/10 p-4 shadow-lg hover:bg-white/20"
+        className="fixed left-4 top-4 rounded-full bg-white/10 p-4 shadow-lg hover:bg-white/20"
       >
         Show Timer
       </button>
@@ -130,6 +151,7 @@ export function PomodoroTimer() {
 
   return (
     <div
+      ref={containerRef}
       className="fixed z-50 flex cursor-grab flex-col items-center gap-4 rounded-lg bg-[#2e026d] p-6 shadow-lg active:cursor-grabbing"
       style={{ left: position.x, top: position.y }}
       onMouseDown={handleMouseDown}
