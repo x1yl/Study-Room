@@ -9,7 +9,6 @@ import { Chat } from "~/app/_components/chat";
 import { type Metadata } from "next";
 import { MemberMenu } from "~/app/_components/member-menu";
 import { LeaveRoom } from "~/app/_components/leave-room";
-import { CalendarWidget } from "~/app/_components/calendar-widget";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -63,10 +62,7 @@ export default async function RoomPage({
               <LeaveRoom roomId={resolvedParams.id} />
             )}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
-            <Chat roomId={resolvedParams.id} />
-            <CalendarWidget />
-          </div>
+          <Chat roomId={resolvedParams.id} />
         </div>
         <PomodoroTimer />
       </main>
