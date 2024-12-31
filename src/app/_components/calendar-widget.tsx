@@ -5,6 +5,15 @@ import { api } from "~/trpc/react";
 import { useState } from "react";
 import { Settings, X } from "lucide-react";
 
+interface Calendar {
+  id: string;
+  summary: string;
+  backgroundColor: string;
+  primary?: boolean;
+  selected?: boolean;
+  accessRole: string;
+}
+
 interface CalendarEvent {
   id: string;
   summary: string;
@@ -44,18 +53,17 @@ export function CalendarWidget() {
   );
   const [showTasks, setShowTasks] = useState(true);
 
-  const { data: calendars = [] } = api.calendar.getCalendarList.useQuery(
-    undefined,
-    {
-      enabled: !!session,
-    },
-  );
-
-  const { data: events = [], isLoading: isLoadingEvents } =
-    api.calendar.getEvents.useQuery<CalendarEvent[]>(timeRange, {
+  const { data, isLoading: isLoadingEvents } =
+    api.calendar.getCalendarData.useQuery<{
+      allEvents: CalendarEvent[];
+      calendars: Calendar[];
+    }>(timeRange, {
       enabled: !!session,
       retry: false,
     });
+
+  const events = data?.allEvents ?? [];
+  const calendars = data?.calendars ?? [];
 
   const { data: tasks = [], isLoading: isLoadingTasks } =
     api.tasks.getTasks.useQuery<Task[]>(timeRange, {
@@ -166,13 +174,13 @@ export function CalendarWidget() {
               <label key={cal.id} className="flex items-center space-x-2">
                 <input
                   type="checkbox"
-                  checked={!hiddenCalendars.has(cal.id!)}
+                  checked={!hiddenCalendars.has(cal.id)}
                   onChange={() => {
                     const newHidden = new Set(hiddenCalendars);
-                    if (hiddenCalendars.has(cal.id!)) {
-                      newHidden.delete(cal.id!);
+                    if (hiddenCalendars.has(cal.id)) {
+                      newHidden.delete(cal.id);
                     } else {
-                      newHidden.add(cal.id!);
+                      newHidden.add(cal.id);
                     }
                     setHiddenCalendars(newHidden);
                   }}

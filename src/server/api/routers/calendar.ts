@@ -6,36 +6,7 @@ import { google } from "googleapis";
 const calendar = google.calendar("v3");
 
 export const calendarRouter = createTRPCRouter({
-  getCalendarList: protectedProcedure.query(async ({ ctx }) => {
-    const account = await ctx.db.account.findFirst({
-      where: {
-        userId: ctx.session.user.id,
-        provider: "google",
-      },
-    });
-
-    if (!account?.access_token) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "Google Calendar not connected",
-      });
-    }
-
-    const auth = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
-    );
-
-    auth.setCredentials({
-      access_token: account.access_token,
-      refresh_token: account.refresh_token,
-    });
-
-    const calendarList = await calendar.calendarList.list({ auth });
-    return calendarList.data.items ?? [];
-  }),
-
-  getEvents: protectedProcedure
+  getCalendarData: protectedProcedure
     .input(
       z.object({
         timeMin: z.string().optional(),
@@ -99,6 +70,6 @@ export const calendarRouter = createTRPCRouter({
         return aTime.localeCompare(bTime);
       });
 
-      return allEvents;
+      return { allEvents, calendars };
     }),
 });

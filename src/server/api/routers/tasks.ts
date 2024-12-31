@@ -42,21 +42,24 @@ export const tasksRouter = createTRPCRouter({
       const taskLists = await tasks.tasklists.list({ auth });
       const lists = taskLists.data.items ?? [];
 
+      // Fetch tasks from all lists in parallel
       const allTasksPromises = lists.map((list) =>
         tasks.tasks.list({
           auth,
           tasklist: list.id!,
           showCompleted: false,
+          // Google Tasks API uses different date format
           dueMin: input.timeMin ? new Date().toISOString() : undefined,
           dueMax: input.timeMax
             ? new Date(input.timeMax).toISOString()
             : undefined,
-          maxResults: 100,
+          maxResults: 100, // Add a limit to ensure we get results
         }),
       );
 
       const allTasksResponses = await Promise.all(allTasksPromises);
 
+      // Combine all tasks and add list info
       const allTasks = allTasksResponses.flatMap((response, index) => {
         const listInfo = lists[index];
         return (response.data.items ?? []).map((task) => ({
