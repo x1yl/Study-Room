@@ -3,6 +3,7 @@
 import { signIn, useSession } from "next-auth/react";
 import { api } from "~/trpc/react";
 import { useState } from "react";
+import { Settings, X } from "lucide-react";
 
 interface CalendarEvent {
   id: string;
@@ -10,6 +11,10 @@ interface CalendarEvent {
   description?: string;
   location?: string;
   start: {
+    dateTime?: string;
+    date?: string;
+  };
+  end: {
     dateTime?: string;
     date?: string;
   };
@@ -33,6 +38,18 @@ export function CalendarWidget() {
     timeMin: new Date().toISOString(),
     timeMax: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // Extended to 30 days
   });
+  const [showSettings, setShowSettings] = useState(false);
+  const [hiddenCalendars, setHiddenCalendars] = useState<Set<string>>(
+    new Set(),
+  );
+  const [showTasks, setShowTasks] = useState(true);
+
+  const { data: calendars = [] } = api.calendar.getCalendarList.useQuery(
+    undefined,
+    {
+      enabled: !!session,
+    },
+  );
 
   const { data: events = [], isLoading: isLoadingEvents } =
     api.calendar.getEvents.useQuery<CalendarEvent[]>(timeRange, {
@@ -42,7 +59,7 @@ export function CalendarWidget() {
 
   const { data: tasks = [], isLoading: isLoadingTasks } =
     api.tasks.getTasks.useQuery<Task[]>(timeRange, {
-      enabled: !!session,
+      enabled: !!session && showTasks,
       retry: false,
     });
 
@@ -59,11 +76,14 @@ export function CalendarWidget() {
     return item.start?.dateTime ?? item.start?.date ?? "";
   };
 
-  const sortedItems = [...events, ...tasks].sort((firstItem, secondItem) => {
-    const firstItemDateTime = getItemDateTime(firstItem);
-    const secondItemDateTime = getItemDateTime(secondItem);
-    return firstItemDateTime.localeCompare(secondItemDateTime);
-  });
+  // Filter events based on hidden calendars
+  const filteredEvents = events.filter(
+    (event) => !hiddenCalendars.has(event.calendarId),
+  );
+
+  const sortedItems = [...filteredEvents, ...(showTasks ? tasks : [])].sort(
+    (a, b) => getItemDateTime(a).localeCompare(getItemDateTime(b)),
+  );
 
   const items = sortedItems;
 
@@ -114,9 +134,65 @@ export function CalendarWidget() {
 
   return (
     <div className="max-h-96 overflow-y-auto rounded-lg bg-white/10 p-4 text-white">
-      <h3 className="sticky top-0 mb-4 bg-[#2e026d] py-2 text-lg font-semibold">
-        Upcoming Items ({items.length})
-      </h3>
+      <div className="sticky top-0 mb-4 flex items-center justify-between bg-[#2e026d] py-2">
+        <h3 className="text-lg font-semibold">
+          Upcoming Items ({sortedItems.length})
+        </h3>
+        <button
+          onClick={() => setShowSettings(!showSettings)}
+          className="rounded-full p-1 hover:bg-white/10"
+          title="Settings"
+        >
+          {showSettings ? <X size={20} /> : <Settings size={20} />}
+        </button>
+      </div>
+
+      {showSettings && (
+        <div className="mb-4 rounded-lg bg-white/5 p-3">
+          <div className="mb-3">
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={showTasks}
+                onChange={(e) => setShowTasks(e.target.checked)}
+                className="rounded"
+              />
+              <span>Show Tasks</span>
+            </label>
+          </div>
+          <div className="space-y-2">
+            <h4 className="font-medium">Calendars</h4>
+            {calendars.map((cal) => (
+              <label key={cal.id} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={!hiddenCalendars.has(cal.id!)}
+                  onChange={() => {
+                    const newHidden = new Set(hiddenCalendars);
+                    if (hiddenCalendars.has(cal.id!)) {
+                      newHidden.delete(cal.id!);
+                    } else {
+                      newHidden.add(cal.id!);
+                    }
+                    setHiddenCalendars(newHidden);
+                  }}
+                  className="rounded"
+                />
+                <span className="flex items-center space-x-2">
+                  <span
+                    className="h-3 w-3 rounded-full"
+                    style={{
+                      backgroundColor: cal.backgroundColor ?? "#4285f4",
+                    }}
+                  ></span>
+                  <span>{cal.summary}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-2">
         {items.map((item) => (
           <div
@@ -141,12 +217,12 @@ export function CalendarWidget() {
             <p className="text-sm text-gray-300">
               {"type" in item
                 ? item.due
-                  ? new Date(item.due).toLocaleDateString()
+                  ? `${(new Date(item.due).getUTCMonth() + 1).toString().padStart(2, "0")}/${new Date(item.due).getUTCDate().toString().padStart(2, "0")}/${new Date(item.due).getUTCFullYear()}`
                   : "No due date"
                 : item.start?.dateTime
-                  ? new Date(item.start.dateTime).toLocaleString()
+                  ? `${new Date(item.start.dateTime).toLocaleString()} - ${new Date(item.end?.dateTime ?? "").toLocaleString()}`
                   : item.start?.date
-                    ? new Date(item.start.date).toLocaleDateString()
+                    ? `${(new Date(item.start.date).getUTCMonth() + 1).toString().padStart(2, "0")}/${new Date(item.start.date).getUTCDate().toString().padStart(2, "0")}/${new Date(item.start.date).getUTCFullYear()}`
                     : "No date"}
             </p>
             {!("type" in item) && (
