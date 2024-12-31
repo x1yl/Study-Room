@@ -32,21 +32,48 @@ export const calendarRouter = createTRPCRouter({
         process.env.GOOGLE_CLIENT_ID,
         process.env.GOOGLE_CLIENT_SECRET,
       );
+
       auth.setCredentials({
         access_token: account.access_token,
         refresh_token: account.refresh_token,
       });
 
-      const response = await calendar.events.list({
-        auth,
-        calendarId: "primary",
-        timeMin: input.timeMin ?? new Date().toISOString(),
-        timeMax: input.timeMax,
-        maxResults: 10,
-        singleEvents: true,
-        orderBy: "startTime",
+      // Get list of all calendars
+      const calendarList = await calendar.calendarList.list({ auth });
+      const calendars = calendarList.data.items ?? [];
+
+      // Fetch events from all calendars in parallel
+      const allEventsPromises = calendars.map((cal) =>
+        calendar.events.list({
+          auth,
+          calendarId: cal.id ?? "primary",
+          timeMin: input.timeMin ?? new Date().toISOString(),
+          timeMax: input.timeMax,
+          singleEvents: true,
+          orderBy: "startTime",
+        }),
+      );
+
+      const allEventsResponses = await Promise.all(allEventsPromises);
+
+      // Combine all events and add calendar info
+      const allEvents = allEventsResponses.flatMap((response, index) => {
+        const calendarInfo = calendars[index];
+        return (response.data.items ?? []).map((event) => ({
+          ...event,
+          calendarId: calendarInfo!.id,
+          calendarTitle: calendarInfo!.summary,
+          backgroundColor: calendarInfo!.backgroundColor,
+        }));
       });
 
-      return response.data.items ?? [];
+      // Sort all events by start time
+      allEvents.sort((a, b) => {
+        const aTime = a.start?.dateTime ?? a.start?.date ?? "";
+        const bTime = b.start?.dateTime ?? b.start?.date ?? "";
+        return aTime.localeCompare(bTime);
+      });
+
+      return allEvents;
     }),
 });

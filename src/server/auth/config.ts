@@ -61,8 +61,11 @@ export const authConfig = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       authorization: {
         params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
           scope:
-            "https://www.googleapis.com/auth/calendar openid profile email",
+            "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/tasks openid profile email",
         },
       },
     }),
@@ -78,6 +81,9 @@ export const authConfig = {
   ],
   adapter: PrismaAdapter(db),
   callbacks: {
+    async redirect({ baseUrl }) {
+      return baseUrl;
+    },
     session: ({ session, user }) => ({
       ...session,
       user: {
