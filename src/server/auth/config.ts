@@ -91,5 +91,21 @@ export const authConfig = {
         id: user.id,
       },
     }),
+    async signIn({ account }) {
+      if (account?.provider === "google" && account.scope) {
+        await db.account.update({
+          where: {
+            provider_providerAccountId: {
+              provider: "google",
+              providerAccountId: account.providerAccountId,
+            },
+          },
+          data: {
+            scope: account.scope,
+          },
+        });
+      }
+      return true;
+    },
   },
 } satisfies NextAuthConfig;
