@@ -65,7 +65,7 @@ export const authConfig = {
           access_type: "offline",
           response_type: "code",
           scope:
-            "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/tasks openid profile email",
+            "https://www.googleapis.com/auth/calendar.events.readonly https://www.googleapis.com/auth/calendar.calendarlist.readonly https://www.googleapis.com/auth/tasks.readonly openid profile email",
         },
       },
     }),
