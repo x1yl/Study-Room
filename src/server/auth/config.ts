@@ -81,7 +81,11 @@ export const authConfig = {
   ],
   adapter: PrismaAdapter(db),
   callbacks: {
-    async redirect({ baseUrl }) {
+    async redirect({ baseUrl, url }) {
+      const returnTo = new URL(url).searchParams.get("returnTo");
+      if (returnTo && returnTo.startsWith(baseUrl)) {
+        return returnTo;
+      }
       return baseUrl;
     },
     session: ({ session, user }) => ({
@@ -91,21 +95,46 @@ export const authConfig = {
         id: user.id,
       },
     }),
-    /* async signIn({ account }) {
+    async signIn({ account }) {
       if (account?.provider === "google" && account.scope) {
-        await db.account.update({
+        const existingAccount = await db.account.findUnique({
           where: {
             provider_providerAccountId: {
               provider: "google",
               providerAccountId: account.providerAccountId,
             },
-          },
-          data: {
-            scope: account.scope,
-          },
+          }
         });
+    
+        if (!existingAccount && account.userId) {
+          await db.account.create({
+            data: {
+              provider: "google",
+              providerAccountId: account.providerAccountId,
+              type: "oauth",
+              scope: account.scope,
+              userId: account.userId,
+              access_token: account.access_token,
+              expires_at: account.expires_at,
+              token_type: account.token_type,
+              id_token: account.id_token,
+            }
+          });
+        } else {
+          await db.account.update({
+            where: {
+              provider_providerAccountId: {
+                provider: "google", 
+                providerAccountId: account.providerAccountId,
+              },
+            },
+            data: {
+              scope: account.scope,
+            },
+          });
+        }
       }
       return true;
-    }, */
+    }
   },
 } satisfies NextAuthConfig;
