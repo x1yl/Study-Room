@@ -83,7 +83,7 @@ export const authConfig = {
   callbacks: {
     async redirect({ baseUrl, url }) {
       const returnTo = new URL(url).searchParams.get("returnTo");
-      if (returnTo && returnTo.startsWith(baseUrl)) {
+      if (returnTo?.startsWith(baseUrl)) {
         return returnTo;
       }
       return baseUrl;
@@ -103,9 +103,9 @@ export const authConfig = {
               provider: "google",
               providerAccountId: account.providerAccountId,
             },
-          }
+          },
         });
-    
+
         if (!existingAccount && account.userId) {
           await db.account.create({
             data: {
@@ -118,13 +118,13 @@ export const authConfig = {
               expires_at: account.expires_at,
               token_type: account.token_type,
               id_token: account.id_token,
-            }
+            },
           });
         } else {
           await db.account.update({
             where: {
               provider_providerAccountId: {
-                provider: "google", 
+                provider: "google",
                 providerAccountId: account.providerAccountId,
               },
             },
@@ -135,6 +135,6 @@ export const authConfig = {
         }
       }
       return true;
-    }
+    },
   },
 } satisfies NextAuthConfig;
