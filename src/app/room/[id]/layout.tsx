@@ -3,7 +3,7 @@ import { HydrateClient } from "~/trpc/server";
 import { Providers } from "~/app/_components/providers";
 import Footer from "~/app/_components/Footer";
 
-export default function RoomLayout({ children }: PropsWithChildren) {
+export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
       <body>
