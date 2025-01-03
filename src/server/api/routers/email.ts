@@ -18,7 +18,7 @@ export const emailRouter = createTRPCRouter({
       try {
         await resend.emails.send({
           from: "Study Rooms <onboarding@resend.dev>",
-          to: "doogypanda@gmail.com", 
+          to: "life23243@tutanota.com", 
           replyTo: input.email,
           subject: `Contact Form: ${input.subject}`,
           text: `Name: ${input.name}\nEmail: ${input.email}\nMessage: ${input.message}`,
