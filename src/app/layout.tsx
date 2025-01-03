@@ -24,13 +24,14 @@ export default async function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Study Room" />
       </head>
       <body>
-        {session?.user && (
-          <div className="fixed right-4 top-4 z-50">
-            <ProfileMenu user={session.user} />
-          </div>
-        )}
-        {children}
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          {session?.user && (
+            <div className="fixed right-4 top-4 z-50">
+              <ProfileMenu user={session.user} />
+            </div>
+          )}
+          {children}
+        </TRPCReactProvider>
         <Footer />
       </body>
     </html>
