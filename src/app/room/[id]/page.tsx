@@ -10,7 +10,7 @@ import { type Metadata } from "next";
 import { MemberMenu } from "~/app/_components/member-menu";
 import { LeaveRoom } from "~/app/_components/leave-room";
 import { CalendarWidget } from "~/app/_components/calendar-widget";
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { HomeIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -59,7 +59,7 @@ export default async function RoomPage({
             href="/"
             className="rounded-full bg-white/10 p-2 text-white transition hover:bg-white/20"
           >
-            <ArrowLeftIcon className="h-6 w-6" />
+            <HomeIcon className="h-6 w-6" />
           </Link>
           <h1 className="text-4xl font-bold">{room.name}</h1>
           <MemberMenu roomId={resolvedParams.id} />
