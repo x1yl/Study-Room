@@ -5,6 +5,7 @@ import { JoinRoom } from "~/app/_components/join-room";
 import { RoomList } from "~/app/_components/room-list";
 import { auth } from "~/server/auth";
 import { HydrateClient } from "~/trpc/server";
+import { ProfileMenu } from "./_components/ProfileMenu";
 
 export default async function Home() {
   const session = await auth();
@@ -12,6 +13,11 @@ export default async function Home() {
   return (
     <HydrateClient>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+        {session?.user && (
+          <div className="fixed right-4 top-4 z-50">
+            <ProfileMenu user={session.user} />
+          </div>
+        )}
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
             Study <span className="text-[hsl(280,100%,70%)]">Rooms</span>
