@@ -73,7 +73,7 @@ export function ProfileMenu({ user }: ProfileMenuProps) {
                   type="text"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  className="block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  className="block w-full rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 />
                 <button
                   onClick={() => {
