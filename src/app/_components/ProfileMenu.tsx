@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Menu, MenuButton, MenuItems } from "@headlessui/react";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
