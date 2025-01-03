@@ -1,7 +1,7 @@
 export default function PrivacyPolicy() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
-      <div className="prose max-w-none">
+      <article className="prose prose-slate max-w-none prose-headings:font-semibold prose-h1:text-4xl prose-h2:text-2xl prose-h3:text-xl prose-h4:text-lg prose-p:text-gray-600 prose-li:text-gray-600">
         <h1>Privacy Policy</h1>
         <p>Last updated: January 02, 2025</p>
         <p>
@@ -13,15 +13,7 @@ export default function PrivacyPolicy() {
         <p>
           We use Your Personal data to provide and improve the Service. By using
           the Service, You agree to the collection and use of information in
-          accordance with this Privacy Policy. This Privacy Policy has been
-          created with the help of the{" "}
-          <a
-            href="https://www.termsfeed.com/privacy-policy-generator/"
-            target="_blank"
-          >
-            Privacy Policy Generator
-          </a>
-          .
+          accordance with this Privacy Policy.
         </p>
         <h2>Interpretation and Definitions</h2>
         <h3>Interpretation</h3>
@@ -558,7 +550,7 @@ export default function PrivacyPolicy() {
             </a>
           </li>
         </ul>
-      </div>
+      </article>
     </div>
   );
 }
