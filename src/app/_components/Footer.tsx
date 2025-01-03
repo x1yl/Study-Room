@@ -1,20 +1,14 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 mt-auto">
-      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <footer className="mt-auto bg-gray-100">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="flex justify-center space-x-6">
-          <Link 
-            href="/privacy"
-            className="text-gray-600 hover:text-gray-900"
-          >
+          <Link href="/privacy" className="text-gray-600 hover:text-gray-900">
             Privacy Policy
           </Link>
-          <Link 
-            href="/contact"
-            className="text-gray-600 hover:text-gray-900"
-          >
+          <Link href="/contact" className="text-gray-600 hover:text-gray-900">
             Contact
           </Link>
         </div>
