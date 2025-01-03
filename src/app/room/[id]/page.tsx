@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PomodoroTimer } from "~/app/_components/pomodoro-timer";
 import { auth } from "~/server/auth";
@@ -9,6 +10,7 @@ import { type Metadata } from "next";
 import { MemberMenu } from "~/app/_components/member-menu";
 import { LeaveRoom } from "~/app/_components/leave-room";
 import { CalendarWidget } from "~/app/_components/calendar-widget";
+import { HomeIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -53,6 +55,12 @@ export default async function RoomPage({
     <main className="flex flex-col items-center justify-start text-white">
       <div className="container flex flex-col items-center gap-12 px-4 py-16">
         <div className="flex items-center gap-4">
+          <Link
+            href="/"
+            className="rounded-full bg-white/10 p-2 text-white transition hover:bg-white/20"
+          >
+            <HomeIcon className="h-6 w-6" />
+          </Link>
           <h1 className="text-4xl font-bold">{room.name}</h1>
           <MemberMenu roomId={resolvedParams.id} />
           {isOwner ? (
