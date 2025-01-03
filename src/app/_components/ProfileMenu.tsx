@@ -29,8 +29,8 @@ export function ProfileMenu({ user }: ProfileMenuProps) {
   });
 
   const deleteAccount = api.user.deleteAccount.useMutation({
-    onSuccess: async () => {
-      await signOut({ callbackUrl: "/" });
+    onSuccess: () => {
+      router.push('/');
     },
   });
 
