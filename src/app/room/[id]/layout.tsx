@@ -1,6 +1,7 @@
 import { type PropsWithChildren } from "react";
 import { HydrateClient } from "~/trpc/server";
 import { Providers } from "~/app/_components/providers";
+import Footer from "~/app/_components/Footer";
 
 export default function RoomLayout({ children }: PropsWithChildren) {
   return (
@@ -13,6 +14,7 @@ export default function RoomLayout({ children }: PropsWithChildren) {
             </div>
           </HydrateClient>
         </Providers>
+        <Footer />
       </body>
     </html>
   );

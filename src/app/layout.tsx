@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import Footer from "~/app/_components/Footer";
 
 export const metadata: Metadata = {
   title: "Study Rooms",
@@ -21,6 +22,7 @@ export default function RootLayout({
       </head>
       <body>
         <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Footer />
       </body>
     </html>
   );
