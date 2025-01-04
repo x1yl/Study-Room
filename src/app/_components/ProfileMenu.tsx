@@ -30,7 +30,7 @@ export function ProfileMenu({ user }: ProfileMenuProps) {
 
   const deleteAccount = api.user.deleteAccount.useMutation({
     onSuccess: () => {
-      router.push('/');
+      router.push("/");
     },
   });
 
