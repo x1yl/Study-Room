@@ -21,7 +21,7 @@ export default async function RootLayout({
   const session = await auth();
 
   return (
-    <html lang="en" className={GeistSans.variable}>
+    <html lang="en" className={`${GeistSans.variable}`}>
       <head>
         <meta name="apple-mobile-web-app-title" content="Study Room" />
       </head>
