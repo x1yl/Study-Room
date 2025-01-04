@@ -80,17 +80,12 @@ export const authConfig = {
      */
   ],
   adapter: PrismaAdapter(db),
-  pages: {
-    signIn: "/api/auth/signin",
-    signOut: "/api/auth/signout",
-    error: "/api/auth/error",
-  },
   callbacks: {
-    async redirect({ url, baseUrl }) {
-      // Allow redirects to the same site
-      if (url.startsWith(baseUrl)) return url;
-      // Allow redirects to relative urls
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
+    async redirect({ baseUrl, url }) {
+      const returnTo = new URL(url).searchParams.get("returnTo");
+      if (returnTo?.startsWith(baseUrl)) {
+        return returnTo;
+      }
       return baseUrl;
     },
     session: ({ session, user }) => ({
