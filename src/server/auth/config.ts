@@ -95,46 +95,87 @@ export const authConfig = {
         id: user.id,
       },
     }),
-    async signIn({ account }) {
-      if (account?.provider === "google" && account.scope) {
-        const existingAccount = await db.account.findUnique({
-          where: {
-            provider_providerAccountId: {
-              provider: "google",
-              providerAccountId: account.providerAccountId,
-            },
-          },
+    async signIn({ user, account }) {
+      if (!user.email) {
+        return false;
+      }
+
+      try {
+        // Check if user exists with this email
+        const existingUser = await db.user.findUnique({
+          where: { email: user.email },
+          include: { accounts: true },
         });
 
-        if (!existingAccount && account.userId) {
-          await db.account.create({
-            data: {
-              provider: "google",
-              providerAccountId: account.providerAccountId,
-              type: "oauth",
-              scope: account.scope,
-              userId: account.userId,
-              access_token: account.access_token,
-              expires_at: account.expires_at,
-              token_type: account.token_type,
-              id_token: account.id_token,
+        if (existingUser) {
+          // Check if this provider account already exists
+          const existingAccount = await db.account.findUnique({
+            where: {
+              provider_providerAccountId: {
+                provider: account!.provider,
+                providerAccountId: account!.providerAccountId,
+              },
             },
           });
-        } else {
-          await db.account.update({
+
+          // If no existing account for this provider, link it
+          if (!existingAccount) {
+            await db.account.create({
+              data: {
+                userId: existingUser.id,
+                type: account!.type,
+                provider: account!.provider,
+                providerAccountId: account!.providerAccountId,
+                access_token: account!.access_token,
+                expires_at: account!.expires_at,
+                token_type: account!.token_type,
+                scope: account!.scope,
+                id_token: account!.id_token,
+                refresh_token: account!.refresh_token,
+              },
+            });
+          }
+
+          // Update user ID to match existing user
+          user.id = existingUser.id;
+        }
+
+        // Google-specific token handling
+        if (account?.provider === "google" && account.scope) {
+          const accountToUpdate = await db.account.findUnique({
             where: {
               provider_providerAccountId: {
                 provider: "google",
                 providerAccountId: account.providerAccountId,
               },
             },
-            data: {
-              scope: account.scope,
-            },
           });
+
+          if (accountToUpdate) {
+            await db.account.update({
+              where: {
+                provider_providerAccountId: {
+                  provider: "google",
+                  providerAccountId: account.providerAccountId,
+                },
+              },
+              data: {
+                scope: account.scope,
+                access_token: account.access_token,
+                expires_at: account.expires_at,
+                token_type: account.token_type,
+                id_token: account.id_token,
+                refresh_token: account.refresh_token,
+              },
+            });
+          }
         }
+
+        return true;
+      } catch (error) {
+        console.error("Error in signIn callback:", error);
+        return false;
       }
-      return true;
     },
   },
 } satisfies NextAuthConfig;

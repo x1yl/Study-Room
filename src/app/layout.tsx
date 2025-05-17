@@ -29,7 +29,7 @@ export default async function RootLayout({
         <TRPCReactProvider {...{ headers: headers() }}>
           <div className="min-h-screen bg-linear-to-b from-[#2e026d] to-[#15162c]">
             {session?.user && (
-              <div className="fixed right-4 top-4 z-50">
+              <div className="fixed top-4 right-4 z-50">
                 <ProfileMenu user={session.user} />
               </div>
             )}

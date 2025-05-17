@@ -31,7 +31,7 @@ export function Chat({ roomId }: { roomId: string }) {
   }, [messages, isCollapsed]);
 
   return (
-    <div className="fixed bottom-4 right-4 w-full max-w-[calc(100%-2rem)] rounded-lg bg-white/10 p-4 shadow-lg sm:max-w-[360px] md:max-w-[384px]">
+    <div className="fixed right-4 bottom-4 w-full max-w-[calc(100%-2rem)] rounded-lg bg-white/10 p-4 shadow-lg sm:max-w-[360px] md:max-w-[384px]">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="truncate font-semibold">Chat</h3>
         <button
@@ -49,9 +49,12 @@ export function Chat({ roomId }: { roomId: string }) {
         >
           <div className="flex flex-col-reverse gap-2">
             {messages?.map((msg) => (
-              <div key={msg.id} className="break-words rounded-sm bg-white/5 p-2">
+              <div
+                key={msg.id}
+                className="rounded-sm bg-white/5 p-2 break-words"
+              >
                 <div className="truncate font-bold">{msg.user.name}:</div>
-                <div className="whitespace-pre-wrap break-words">
+                <div className="break-words whitespace-pre-wrap">
                   {msg.content}
                 </div>
               </div>
@@ -79,7 +82,7 @@ export function Chat({ roomId }: { roomId: string }) {
         />
         <button
           type="submit"
-          className="whitespace-nowrap rounded-lg bg-white/10 px-3 py-2 text-sm font-semibold hover:bg-white/20 sm:px-4 sm:text-base"
+          className="rounded-lg bg-white/10 px-3 py-2 text-sm font-semibold whitespace-nowrap hover:bg-white/20 sm:px-4 sm:text-base"
         >
           Send
         </button>

@@ -6,6 +6,7 @@ import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 
 interface ProfileMenuProps {
   user: {
@@ -48,17 +49,20 @@ export function ProfileMenu({ user }: ProfileMenuProps) {
     <Menu as="div" className="relative">
       <MenuButton className="flex items-center rounded-full bg-white/10 p-2 text-white hover:bg-white/20">
         {user.image ? (
-          <img
+          <Image
             src={user.image}
             alt="Profile"
             className="h-8 w-8 rounded-full"
+            width={32}
+            height={32}
+            unoptimized
           />
         ) : (
           <UserCircleIcon className="h-8 w-8" />
         )}
       </MenuButton>
 
-      <MenuItems className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden">
+      <MenuItems className="ring-opacity-5 absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black focus:outline-hidden">
         <div className="p-4">
           <div className="mb-4">
             <label className="text-sm font-medium text-gray-700">Email</label>

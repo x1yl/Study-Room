@@ -2,10 +2,10 @@ export default function TosPage() {
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-4xl px-4 py-8">
-        <article className="prose prose-slate max-w-none prose-headings:font-semibold prose-h1:text-4xl prose-h2:text-2xl prose-h3:text-xl prose-h4:text-lg prose-p:text-gray-600 prose-li:text-gray-600">
+        <article className="prose prose-slate prose-headings:font-semibold prose-h1:text-4xl prose-h2:text-2xl prose-h3:text-xl prose-h4:text-lg prose-p:text-gray-600 prose-li:text-gray-600 max-w-none">
           <h1>TERMS OF SERVICE</h1>
           <p>
-            <strong>Last updated:</strong> January 02, 2025
+            <strong>Last updated:</strong> May 17, 2025
           </p>
 
           <h2>AGREEMENT TO OUR LEGAL TERMS</h2>
@@ -37,7 +37,7 @@ export default function TosPage() {
             study activities through our digital interface.
           </p>
 
-          <p>You can contact us by email at life23243@tutanota.com.</p>
+          <p>You can contact us by email at studyroom@kevinzheng.fyi.</p>
 
           <p>
             These Legal Terms constitute a legally binding agreement made
@@ -226,7 +226,7 @@ export default function TosPage() {
           <p>
             If you wish to make any use of the Services, Content, or Marks other
             than as set out in this section or elsewhere in our Legal Terms,
-            please address your request to: life23243@tutanota.com. If we ever
+            please address your request to: studyroom@kevinzheng.fyi. If we ever
             grant you the permission to post, reproduce, or publicly display any
             part of our Services or Content, you must identify us as the owners
             or licensors of the Services, Content, or Marks and ensure that any
@@ -1006,14 +1006,14 @@ export default function TosPage() {
           <h2 id="contact">24. CONTACT US</h2>
           <p>
             In order to resolve a complaint regarding the Services or to receive
-            further information regarding use of the Services, please contact us
-            at:
+            further information regarding use of the Services, please contact
+            us:
           </p>
           <p>
-            <strong>Study Rooms</strong>
-          </p>
-          <p>
-            <strong>life23243@tutanota.com</strong>
+            By visiting this page on our website:{" "}
+            <a href="https://study-room-sooty.vercel.app/contact">
+              https://study-room-sooty.vercel.app/contact
+            </a>
           </p>
         </article>
       </div>

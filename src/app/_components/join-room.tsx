@@ -33,7 +33,7 @@ export function JoinRoom() {
         placeholder="Room ID"
         value={roomId}
         onChange={(e) => setRoomId(e.target.value)}
-        className="w-full rounded-full px-4 py-2 text-black"
+        className="w-full rounded-full px-4 py-2 text-white"
       />
       <button
         type="submit"

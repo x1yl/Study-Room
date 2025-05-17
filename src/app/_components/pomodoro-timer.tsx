@@ -142,7 +142,7 @@ export function PomodoroTimer() {
     return (
       <button
         onClick={() => setIsVisible(true)}
-        className="fixed left-4 top-4 rounded-full bg-white/10 p-4 shadow-lg hover:bg-white/20"
+        className="fixed top-4 left-4 rounded-full bg-white/10 p-4 shadow-lg hover:bg-white/20"
       >
         Show Timer
       </button>
@@ -158,7 +158,7 @@ export function PomodoroTimer() {
     >
       <button
         onClick={() => setIsVisible(false)}
-        className="absolute right-2 top-2 text-white/60 hover:text-white"
+        className="absolute top-2 right-2 text-white/60 hover:text-white"
       >
         ✕
       </button>
