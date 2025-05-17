@@ -30,6 +30,7 @@
     "@trpc/client": "^11.1.2",
     "@trpc/react-query": "^11.1.2",
     "@trpc/server": "^11.1.2",
+    "eslint-plugin-import-x": "^4.11.1",
     "geist": "^1.4.2",
     "googleapis": "^148.0.0",
     "lucide-react": "^0.511.0",
@@ -43,6 +44,8 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.27.0",
     "@tailwindcss/postcss": "^4.1.7",
     "@tailwindcss/typography": "^0.5.16",
     "@types/eslint": "^9.6.1",
@@ -58,7 +61,8 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "prisma": "^6.8.2",
     "tailwindcss": "^4.1.7",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.32.1"
   },
   "ct3aMetadata": {
     "initVersion": "7.38.1"

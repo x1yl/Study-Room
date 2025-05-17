@@ -12,9 +12,9 @@ import { LeaveRoom } from "~/app/_components/leave-room";
 import { CalendarWidget } from "~/app/_components/calendar-widget";
 import { HomeIcon } from "@heroicons/react/24/outline";
 
-type Props = {
+interface Props {
   params: Promise<{ id: string }>;
-};
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
