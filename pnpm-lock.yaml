@@ -10,13 +10,16 @@ importers:
     dependencies:
       '@auth/prisma-adapter':
         specifier: ^2.9.1
-        version: 2.9.1(@prisma/client@6.8.2(prisma@6.8.2(typescript@5.8.3))(typescript@5.8.3))
+        version: 2.9.1(@prisma/client@6.8.2(prisma@6.8.2(typescript@5.8.3))(typescript@5.8.3))(nodemailer@6.8.0)
       '@headlessui/react':
         specifier: ^2.2.3
         version: 2.2.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@heroicons/react':
         specifier: ^2.2.0
         version: 2.2.0(react@19.1.0)
+      '@marsidev/react-turnstile':
+        specifier: ^1.1.0
+        version: 1.1.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@prisma/client':
         specifier: ^6.8.2
         version: 6.8.2(prisma@6.8.2(typescript@5.8.3))(typescript@5.8.3)
@@ -35,6 +38,9 @@ importers:
       '@trpc/server':
         specifier: ^11.1.2
         version: 11.1.2(typescript@5.8.3)
+      '@types/nodemailer':
+        specifier: ^6.4.17
+        version: 6.4.17
       eslint-plugin-import-x:
         specifier: ^4.11.1
         version: 4.11.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3)
@@ -44,6 +50,9 @@ importers:
       googleapis:
         specifier: ^148.0.0
         version: 148.0.0
+      limiter:
+        specifier: ^3.0.0
+        version: 3.0.0
       lucide-react:
         specifier: ^0.511.0
         version: 0.511.0(react@19.1.0)
@@ -52,7 +61,10 @@ importers:
         version: 15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next-auth:
         specifier: 5.0.0-beta.25
-        version: 5.0.0-beta.25(next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+        version: 5.0.0-beta.25(next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(nodemailer@6.8.0)(react@19.1.0)
+      nodemailer:
+        specifier: ^6.8.0
+        version: 6.8.0
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -411,6 +423,12 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
+  '@marsidev/react-turnstile@1.1.0':
+    resolution: {integrity: sha512-X7bP9ZYutDd+E+klPYF+/BJHqEyyVkN4KKmZcNRr84zs3DcMoftlMAuoKqNSnqg0HE7NQ1844+TLFSJoztCdSA==}
+    peerDependencies:
+      react: ^17.0.2 || ^18.0.0 || ^19.0
+      react-dom: ^17.0.2 || ^18.0.0 || ^19.0
+
   '@napi-rs/wasm-runtime@0.2.10':
     resolution: {integrity: sha512-bCsCyeZEwVErsGmyPNSzwfwFn4OdxBj0mmv6hOFucB/k81Ojdu68RbZdxYsRQUPc9l6SU5F/cG+bXgWs3oUgsQ==}
 
@@ -759,6 +777,9 @@ packages:
 
   '@types/node@22.15.18':
     resolution: {integrity: sha512-v1DKRfUdyW+jJhZNEI1PYy29S2YRxMV5AOO/x/SjKmW0acCIOqmbj6Haf9eHAhsPmrhlHSxEhv/1WszcLWV4cg==}
+
+  '@types/nodemailer@6.4.17':
+    resolution: {integrity: sha512-I9CCaIp6DTldEg7vyUTZi8+9Vo0hi1/T8gv3C89yk1rSAAzoKQ8H8ki/jBYJSFoH/BisgLP8tkZMlQ91CIquww==}
 
   '@types/react-dom@19.1.5':
     resolution: {integrity: sha512-CMCjrWucUBZvohgZxkjd6S9h0nZxXjzus6yDfUb+xLxYM7VvjKNH1tQrE9GWLql1XoOP4/Ds3bwFqShHUYraGg==}
@@ -1770,6 +1791,9 @@ packages:
     resolution: {integrity: sha512-xi6IyHML+c9+Q3W0S4fCQJOym42pyurFiJUHEcEyHS0CeKzia4yZDEsLlqOFykxOdHpNy0NmvVO31vcSqAxJCg==}
     engines: {node: '>= 12.0.0'}
 
+  limiter@3.0.0:
+    resolution: {integrity: sha512-hev7DuXojsTFl2YwyzUJMDnZ/qBDd3yZQLSH3aD4tdL1cqfc3TMnoecEJtWFaQFdErZsKoFMBTxF/FBSkgDbEg==}
+
   locate-path@6.0.0:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
@@ -1891,6 +1915,10 @@ packages:
     peerDependenciesMeta:
       encoding:
         optional: true
+
+  nodemailer@6.8.0:
+    resolution: {integrity: sha512-EjYvSmHzekz6VNkNd12aUqAco+bOkRe3Of5jVhltqKhEsjw/y0PYPJfp83+s9Wzh1dspYAkUW/YNQ350NATbSQ==}
+    engines: {node: '>=6.0.0'}
 
   oauth4webapi@3.5.1:
     resolution: {integrity: sha512-txg/jZQwcbaF7PMJgY7aoxc9QuCxHVFMiEkDIJ60DwDz3PbtXPQnrzo+3X4IRYGChIwWLabRBRpf1k9hO9+xrQ==}
@@ -2445,7 +2473,7 @@ snapshots:
 
   '@ark/util@0.46.0': {}
 
-  '@auth/core@0.37.2':
+  '@auth/core@0.37.2(nodemailer@6.8.0)':
     dependencies:
       '@panva/hkdf': 1.2.1
       '@types/cookie': 0.6.0
@@ -2454,18 +2482,22 @@ snapshots:
       oauth4webapi: 3.5.1
       preact: 10.11.3
       preact-render-to-string: 5.2.3(preact@10.11.3)
+    optionalDependencies:
+      nodemailer: 6.8.0
 
-  '@auth/core@0.39.1':
+  '@auth/core@0.39.1(nodemailer@6.8.0)':
     dependencies:
       '@panva/hkdf': 1.2.1
       jose: 6.0.11
       oauth4webapi: 3.5.1
       preact: 10.24.3
       preact-render-to-string: 6.5.11(preact@10.24.3)
+    optionalDependencies:
+      nodemailer: 6.8.0
 
-  '@auth/prisma-adapter@2.9.1(@prisma/client@6.8.2(prisma@6.8.2(typescript@5.8.3))(typescript@5.8.3))':
+  '@auth/prisma-adapter@2.9.1(@prisma/client@6.8.2(prisma@6.8.2(typescript@5.8.3))(typescript@5.8.3))(nodemailer@6.8.0)':
     dependencies:
-      '@auth/core': 0.39.1
+      '@auth/core': 0.39.1(nodemailer@6.8.0)
       '@prisma/client': 6.8.2(prisma@6.8.2(typescript@5.8.3))(typescript@5.8.3)
     transitivePeerDependencies:
       - '@simplewebauthn/browser'
@@ -2682,6 +2714,11 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@marsidev/react-turnstile@1.1.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
 
   '@napi-rs/wasm-runtime@0.2.10':
     dependencies:
@@ -2992,6 +3029,10 @@ snapshots:
   '@types/node@22.15.18':
     dependencies:
       undici-types: 6.21.0
+
+  '@types/nodemailer@6.4.17':
+    dependencies:
+      '@types/node': 22.15.18
 
   '@types/react-dom@19.1.5(@types/react@19.1.4)':
     dependencies:
@@ -4216,6 +4257,8 @@ snapshots:
       lightningcss-win32-arm64-msvc: 1.30.1
       lightningcss-win32-x64-msvc: 1.30.1
 
+  limiter@3.0.0: {}
+
   locate-path@6.0.0:
     dependencies:
       p-locate: 5.0.0
@@ -4273,11 +4316,13 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next-auth@5.0.0-beta.25(next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0):
+  next-auth@5.0.0-beta.25(next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(nodemailer@6.8.0)(react@19.1.0):
     dependencies:
-      '@auth/core': 0.37.2
+      '@auth/core': 0.37.2(nodemailer@6.8.0)
       next: 15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
+    optionalDependencies:
+      nodemailer: 6.8.0
 
   next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
@@ -4307,6 +4352,8 @@ snapshots:
   node-fetch@2.7.0:
     dependencies:
       whatwg-url: 5.0.0
+
+  nodemailer@6.8.0: {}
 
   oauth4webapi@3.5.1: {}
 

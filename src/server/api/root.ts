@@ -2,7 +2,6 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { roomRouter } from "~/server/api/routers/room";
 import { calendarRouter } from "~/server/api/routers/calendar";
 import { tasksRouter } from "./routers/tasks";
-import { emailRouter } from "./routers/email";
 import { userRouter } from "~/server/api/routers/user";
 
 /**
@@ -14,7 +13,6 @@ export const appRouter = createTRPCRouter({
   room: roomRouter,
   calendar: calendarRouter,
   tasks: tasksRouter,
-  email: emailRouter,
   user: userRouter,
 });
 

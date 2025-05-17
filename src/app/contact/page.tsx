@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { api } from "~/trpc/react";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -13,23 +13,38 @@ export default function ContactPage() {
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
+  const [error, setError] = useState("");
+  const [token, setToken] = useState("");
 
-  const sendEmail = api.email.send.useMutation({
-    onSuccess: () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!token) {
+      setError("Please complete the security check");
+      return;
+    }
+    setStatus("loading");
+    setError("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formData, token }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to send message");
+      }
+
       setStatus("success");
       setFormData({ name: "", email: "", subject: "", message: "" });
       setTimeout(() => setStatus("idle"), 3000);
-    },
-    onError: () => {
+    } catch (err) {
       setStatus("error");
+      setError(err instanceof Error ? err.message : "Failed to send message");
       setTimeout(() => setStatus("idle"), 3000);
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus("loading");
-    sendEmail.mutate(formData);
+    }
   };
 
   return (
@@ -104,6 +119,17 @@ export default function ContactPage() {
                 className="mt-1 w-full rounded-md bg-white/10 p-2 text-white"
               />
             </div>
+
+            <div className="w-full flex justify-center">
+              <Turnstile
+                siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY!}
+                onSuccess={setToken}
+                options={{
+                  theme: "dark",
+                }}
+              />
+            </div>
+            {error && <p className="text-center text-red-400">{error}</p>}
 
             <button
               type="submit"
