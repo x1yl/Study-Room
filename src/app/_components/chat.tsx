@@ -49,7 +49,7 @@ export function Chat({ roomId }: { roomId: string }) {
         >
           <div className="flex flex-col-reverse gap-2">
             {messages?.map((msg) => (
-              <div key={msg.id} className="break-words rounded bg-white/5 p-2">
+              <div key={msg.id} className="break-words rounded-sm bg-white/5 p-2">
                 <div className="truncate font-bold">{msg.user.name}:</div>
                 <div className="whitespace-pre-wrap break-words">
                   {msg.content}

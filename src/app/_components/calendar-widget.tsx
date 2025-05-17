@@ -132,7 +132,7 @@ export function CalendarWidget() {
         <p>No events found or calendar not connected.</p>
         <button
           onClick={() => void signIn("google")}
-          className="mt-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600"
+          className="mt-2 rounded-sm bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600"
         >
           Connect Google Calendar
         </button>

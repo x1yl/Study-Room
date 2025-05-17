@@ -21,6 +21,7 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string(),
     RESEND_API_KEY: z.string(),
     CONTACT_EMAIL: z.string(),
+    DEFAULT_FROM_EMAIL: z.string(),
   },
 
   /**
@@ -46,6 +47,7 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     CONTACT_EMAIL: process.env.CONTACT_EMAIL,
+    DEFAULT_FROM_EMAIL: process.env.DEFAULT_FROM_EMAIL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

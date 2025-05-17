@@ -17,7 +17,7 @@ export const emailRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       try {
         await resend.emails.send({
-          from: "Study Rooms <onboarding@resend.dev>",
+          from: `Study Rooms <${process.env.DEFAULT_FROM_EMAIL}>`,
           to: `${process.env.CONTACT_EMAIL}`,
           replyTo: input.email,
           subject: `Contact Form: ${input.subject}`,

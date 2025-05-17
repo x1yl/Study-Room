@@ -58,7 +58,7 @@ export function ProfileMenu({ user }: ProfileMenuProps) {
         )}
       </MenuButton>
 
-      <MenuItems className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+      <MenuItems className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden">
         <div className="p-4">
           <div className="mb-4">
             <label className="text-sm font-medium text-gray-700">Email</label>
@@ -73,7 +73,7 @@ export function ProfileMenu({ user }: ProfileMenuProps) {
                   type="text"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  className="block w-full rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  className="block w-full rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-500 shadow-xs focus:border-indigo-500 focus:ring-indigo-500"
                 />
                 <button
                   onClick={() => {
