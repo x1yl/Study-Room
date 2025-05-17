@@ -14,7 +14,13 @@ export default function Footer() {
           <Link href="/contact" className="text-gray-600 hover:text-gray-900">
             Contact
           </Link>
-          <a className="text-gray-600 hover:text-gray-900" href="https://www.flaticon.com/free-icons/studying" title="studying icons">Studying icons created by Freepik - Flaticon</a>
+          <a
+            className="text-gray-600 hover:text-gray-900"
+            href="https://www.flaticon.com/free-icons/studying"
+            title="studying icons"
+          >
+            Studying icons created by Freepik - Flaticon
+          </a>
         </div>
         <div className="mt-4 text-center text-sm text-gray-500">
           © {new Date().getFullYear()} Study Rooms. All rights reserved.

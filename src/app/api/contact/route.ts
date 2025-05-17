@@ -2,15 +2,61 @@ import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { rateLimiter } from "~/app/api/contact/middleware";
 
+interface ContactFormData {
+  email: string;
+  name: string;
+  message: string;
+  subject: string;
+  token: string;
+}
+
+interface TurnstileResponse {
+  success: boolean;
+  error?: string[];
+  challenge_ts: string;
+  hostname: string;
+  "error-codes"?: string[];
+  action?: string;
+  cdata?: string;
+}
+
+function isContactFormData(data: unknown): data is ContactFormData {
+  if (!data || typeof data !== "object") return false;
+  const d = data as Record<string, unknown>;
+  return (
+    typeof d.email === "string" &&
+    typeof d.name === "string" &&
+    typeof d.message === "string" &&
+    typeof d.subject === "string" &&
+    typeof d.token === "string"
+  );
+}
+
+async function safeParseJson(data: string): Promise<unknown> {
+  try {
+    return JSON.parse(data);
+  } catch {
+    throw new Error("Invalid JSON response");
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const limitResult = await rateLimiter(request);
     if (limitResult) return limitResult;
 
-    const { email, name, message, subject, token } = await request.json();
+    const rawBody = await safeParseJson(await request.text());
+    if (!isContactFormData(rawBody)) {
+      return NextResponse.json(
+        { error: "Invalid request format" },
+        { status: 400 },
+      );
+    }
+
+    const { email, name, message, subject, token } = rawBody;
 
     const formData = new URLSearchParams();
-    formData.append("secret", process.env.CLOUDFLARE_SECRET_KEY!);
+    formData.append("secret", process.env.CLOUDFLARE_SECRET_KEY ?? "");
     formData.append("response", token);
 
     const turnstileRes = await fetch(
@@ -18,21 +64,25 @@ export async function POST(request: Request) {
       {
         method: "POST",
         body: formData,
-      }
+      },
     );
 
-    const turnstileData = await turnstileRes.json();
+    if (!turnstileRes.ok) {
+      throw new Error("Failed to verify security token");
+    }
+
+    const turnstileData = (await turnstileRes.json()) as TurnstileResponse;
     if (!turnstileData.success) {
       return NextResponse.json(
         { error: "Invalid security token" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!email || !name || !message || !subject) {
       return NextResponse.json(
         { error: "All fields are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -40,7 +90,7 @@ export async function POST(request: Request) {
     if (!emailRegex.test(email)) {
       return NextResponse.json(
         { error: "Invalid email format" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -56,7 +106,7 @@ export async function POST(request: Request) {
 
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || "587"),
+      port: parseInt(process.env.SMTP_PORT ?? "587"),
       secure: false,
       auth: {
         user: process.env.SMTP_USER,
@@ -69,7 +119,7 @@ export async function POST(request: Request) {
     await transporter.sendMail({
       from: process.env.FROM_EMAIL,
       replyTo: `"${name}" <${email}>`,
-      to: process.env.TO_EMAIL,
+      to: process.env.TO_EMAIL ?? "",
       subject: subject || `New Contact Form Message from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
       html: `
@@ -118,7 +168,7 @@ export async function POST(request: Request) {
         error:
           error instanceof Error ? error.message : "Failed to send message",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

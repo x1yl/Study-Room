@@ -33,8 +33,8 @@ export default function ContactPage() {
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Failed to send message");
+        const data = (await response.json()) as { error?: string };
+        throw new Error(data.error ?? "Failed to send message");
       }
 
       setStatus("success");
@@ -42,7 +42,11 @@ export default function ContactPage() {
       setTimeout(() => setStatus("idle"), 3000);
     } catch (err) {
       setStatus("error");
-      setError(err instanceof Error ? err.message : "Failed to send message");
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Failed to send message");
+      }
       setTimeout(() => setStatus("idle"), 3000);
     }
   };
@@ -120,7 +124,7 @@ export default function ContactPage() {
               />
             </div>
 
-            <div className="w-full flex justify-center">
+            <div className="flex w-full justify-center">
               <Turnstile
                 siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY!}
                 onSuccess={setToken}
