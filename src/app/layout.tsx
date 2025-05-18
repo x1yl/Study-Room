@@ -24,6 +24,7 @@ export default async function RootLayout({
     <html lang="en" className={`${GeistSans.variable}`}>
       <head>
         <meta name="apple-mobile-web-app-title" content="Study Room" />
+        <meta name="google-site-verification" content="ZdQDWk0xevv3I1HFeo_FpZZlm-M6P0CNr9lzwDXOsc0" />
       </head>
       <body>
         <TRPCReactProvider {...{ headers: headers() }}>
