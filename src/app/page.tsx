@@ -26,7 +26,7 @@ export default async function Home() {
               {session ? (
                 <span>Logged in as {session.user?.name}</span>
               ) : (
-                <span>Sign in to create or join rooms</span>
+                <span>Lock in with your friends and see what you need to get done from your calendar, clear from distractions.</span>
               )}
             </p>
             <Link
