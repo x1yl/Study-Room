@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 /* Custom CSS Variables for Study Theme */
 @layer base {
@@ -13,7 +13,7 @@
     --study-text-muted: #64748b;
     --focus-ring: #93c5fd;
   }
-  
+
   [data-theme="dark"] {
     --study-bg: #0f172a;
     --study-card: #1e293b;
@@ -31,7 +31,9 @@
   }
 
   body {
-    font-feature-settings: 'rlig' 1, 'calt' 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

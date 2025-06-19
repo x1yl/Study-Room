@@ -98,7 +98,7 @@ export default async function Home() {
               </p>
               <div className="mt-10">
                 <Link
-                  href="/api/auth/signin"
+                  href="/auth/signin"
                   className="bg-primary-600 hover:bg-primary-700 shadow-study-lg hover:shadow-study-xl inline-flex transform items-center rounded-full px-8 py-4 text-lg font-semibold text-white transition-all duration-200 hover:-translate-y-0.5"
                 >
                   Get Started Free
@@ -187,7 +187,7 @@ export default async function Home() {
             </p>
             <div className="mt-10">
               <Link
-                href="/api/auth/signin"
+                href="/auth/signin"
                 className="text-primary-600 shadow-study-lg hover:shadow-study-xl inline-flex transform items-center rounded-full bg-white px-8 py-4 text-lg font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:bg-gray-50"
               >
                 Start Studying Now

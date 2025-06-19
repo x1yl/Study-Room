@@ -34,6 +34,8 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authConfig = {
+  debug: process.env.NODE_ENV === "development",
+  trustHost: true,
   providers: [
     DiscordProvider({
       profile(profile: DiscordProfile) {
@@ -80,12 +82,33 @@ export const authConfig = {
      */
   ],
   adapter: PrismaAdapter(db),
+  pages: {
+    signIn: "/auth/signin",
+  },
   callbacks: {
     async redirect({ baseUrl, url }) {
-      const returnTo = new URL(url).searchParams.get("returnTo");
-      if (returnTo?.startsWith(baseUrl)) {
-        return returnTo;
+      try {
+        // If url is relative, resolve it against baseUrl
+        if (url.startsWith("/")) {
+          return `${baseUrl}${url}`;
+        }
+
+        // If url is absolute and starts with baseUrl, allow it
+        if (url.startsWith(baseUrl)) {
+          return url;
+        }
+
+        // Try to parse as URL to check for returnTo parameter
+        const urlObj = new URL(url);
+        const returnTo = urlObj.searchParams.get("returnTo");
+        if (returnTo?.startsWith(baseUrl)) {
+          return returnTo;
+        }
+      } catch (error) {
+        console.warn("Redirect URL parsing error:", error);
       }
+
+      // Default fallback to baseUrl
       return baseUrl;
     },
     session: ({ session, user }) => ({
