@@ -1,12 +1,7 @@
 "use client";
 
-import {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  type MouseEvent,
-} from "react";
+import { useState, useEffect } from "react";
+import { PlayIcon, PauseIcon, ArrowPathIcon } from "@heroicons/react/24/solid";
 
 type TimerMode = "pomodoro" | "shortBreak" | "longBreak";
 
@@ -17,11 +12,6 @@ const TIMER_CONFIG = {
 };
 
 export function PomodoroTimer() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 20, y: 20 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [isVisible, setIsVisible] = useState(true);
   const [minutes, setMinutes] = useState(TIMER_CONFIG.pomodoro);
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
@@ -79,142 +69,150 @@ export function PomodoroTimer() {
     setSeconds(0);
   };
 
-  const handleMouseDown = useCallback(
-    (e: MouseEvent) => {
-      setIsDragging(true);
-      setDragOffset({
-        x: e.clientX - position.x,
-        y: e.clientY - position.y,
-      });
-    },
-    [position],
-  );
-
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (isDragging && containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-
-        let newX = e.clientX - dragOffset.x;
-        let newY = e.clientY - dragOffset.y;
-
-        if (newX < 0) newX = 0;
-        if (newX + rect.width > viewportWidth) {
-          newX = viewportWidth - rect.width;
-        }
-
-        if (newY < 0) newY = 0;
-        if (newY + rect.height > viewportHeight) {
-          newY = viewportHeight - rect.height;
-        }
-
-        setPosition({ x: newX, y: newY });
-      }
-    },
-    [isDragging, dragOffset],
-  );
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
+  const getProgress = () => {
+    const totalSeconds = TIMER_CONFIG[mode] * 60;
+    const currentSeconds = minutes * 60 + seconds;
+    return ((totalSeconds - currentSeconds) / totalSeconds) * 100;
   };
 
-  useEffect(() => {
-    if (isDragging) {
-      window.addEventListener(
-        "mousemove",
-        handleMouseMove as unknown as EventListener,
-      );
-      window.addEventListener("mouseup", handleMouseUp);
+  const getModeInfo = () => {
+    switch (mode) {
+      case "pomodoro":
+        return {
+          label: "Focus Time",
+          color: "text-primary-600",
+          bgColor: "bg-primary-50",
+        };
+      case "shortBreak":
+        return {
+          label: "Short Break",
+          color: "text-green-600",
+          bgColor: "bg-green-50",
+        };
+      case "longBreak":
+        return {
+          label: "Long Break",
+          color: "text-purple-600",
+          bgColor: "bg-purple-50",
+        };
     }
+  };
 
-    return () => {
-      window.removeEventListener(
-        "mousemove",
-        handleMouseMove as unknown as EventListener,
-      );
-      window.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isDragging, handleMouseMove]);
-
-  if (!isVisible) {
-    return (
-      <button
-        onClick={() => setIsVisible(true)}
-        className="fixed top-4 left-4 rounded-full bg-white/10 p-4 shadow-lg hover:bg-white/20"
-      >
-        Show Timer
-      </button>
-    );
-  }
+  const modeInfo = getModeInfo();
+  const progress = getProgress();
 
   return (
-    <div
-      ref={containerRef}
-      className="fixed z-50 flex cursor-grab flex-col items-center gap-4 rounded-lg bg-[#2e026d] p-6 shadow-lg active:cursor-grabbing"
-      style={{ left: position.x, top: position.y }}
-      onMouseDown={handleMouseDown}
-    >
-      <button
-        onClick={() => setIsVisible(false)}
-        className="absolute top-2 right-2 text-white/60 hover:text-white"
-      >
-        ✕
-      </button>
-      <div className="mb-4 flex gap-2">
-        <button
-          onClick={() => changeMode("pomodoro")}
-          className={`rounded-full px-4 py-2 font-semibold transition ${
-            mode === "pomodoro"
-              ? "bg-white/20"
-              : "bg-white/10 hover:bg-white/20"
-          }`}
-        >
-          Pomodoro
-        </button>
-        <button
-          onClick={() => changeMode("shortBreak")}
-          className={`rounded-full px-4 py-2 font-semibold transition ${
-            mode === "shortBreak"
-              ? "bg-white/20"
-              : "bg-white/10 hover:bg-white/20"
-          }`}
-        >
-          Short Break
-        </button>
-        <button
-          onClick={() => changeMode("longBreak")}
-          className={`rounded-full px-4 py-2 font-semibold transition ${
-            mode === "longBreak"
-              ? "bg-white/20"
-              : "bg-white/10 hover:bg-white/20"
-          }`}
-        >
-          Long Break
-        </button>
+    <div className="shadow-study-lg rounded-2xl border border-slate-200 bg-white p-6">
+      <div className="mb-6 flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-slate-900">Pomodoro Timer</h3>
       </div>
-      <div className="text-6xl font-bold">
-        {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+
+      {/* Mode Selection */}
+      <div className="mb-6 flex gap-2">
+        {(["pomodoro", "shortBreak", "longBreak"] as const).map((timerMode) => (
+          <button
+            key={timerMode}
+            onClick={() => changeMode(timerMode)}
+            className={`flex-1 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200 ${
+              mode === timerMode
+                ? "bg-primary-100 text-primary-700 border-primary-200 border"
+                : "border border-transparent bg-slate-50 text-slate-600 hover:bg-slate-100"
+            }`}
+          >
+            {timerMode === "pomodoro" && "Focus"}
+            {timerMode === "shortBreak" && "Short Break"}
+            {timerMode === "longBreak" && "Long Break"}
+          </button>
+        ))}
       </div>
-      <div className="flex gap-4">
+
+      {/* Timer Display */}
+      <div className="mb-6 text-center">
+        <div
+          className={`inline-flex h-32 w-32 items-center justify-center rounded-full ${modeInfo.bgColor} relative mb-4`}
+        >
+          <svg
+            className="absolute inset-0 h-full w-full -rotate-90 transform"
+            viewBox="0 0 100 100"
+          >
+            <circle
+              cx="50"
+              cy="50"
+              r="45"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="text-slate-200"
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r="45"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              className={
+                mode === "pomodoro"
+                  ? "text-primary-500"
+                  : mode === "shortBreak"
+                    ? "text-green-500"
+                    : "text-purple-500"
+              }
+              strokeDasharray={`${progress * 2.83} 283`}
+              style={{ transition: "stroke-dasharray 1s ease-in-out" }}
+            />
+          </svg>
+          <div className="text-3xl font-bold text-slate-800">
+            {String(minutes).padStart(2, "0")}:
+            {String(seconds).padStart(2, "0")}
+          </div>
+        </div>
+        <p className={`text-sm font-medium ${modeInfo.color}`}>
+          {modeInfo.label}
+        </p>
+      </div>
+
+      {/* Controls */}
+      <div className="mb-4 flex justify-center gap-3">
         <button
           onClick={toggleTimer}
-          className="rounded-full bg-white/10 px-10 py-3 font-semibold transition hover:bg-white/20"
+          className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold transition-all duration-200 ${
+            isActive
+              ? "bg-red-500 text-white hover:bg-red-600"
+              : "bg-primary-600 hover:bg-primary-700 transform text-slate-700 shadow-lg hover:-translate-y-0.5 hover:shadow-xl"
+          }`}
         >
-          {isActive ? "Pause" : "Start"}
+          {isActive ? (
+            <>
+              <PauseIcon className="h-4 w-4" />
+              Pause
+            </>
+          ) : (
+            <>
+              <PlayIcon className="h-4 w-4" />
+              Start
+            </>
+          )}
         </button>
         <button
           onClick={resetTimer}
-          className="rounded-full bg-white/10 px-10 py-3 font-semibold transition hover:bg-white/20"
+          className="inline-flex items-center gap-2 rounded-xl bg-slate-100 px-4 py-3 font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-200"
         >
+          <ArrowPathIcon className="h-4 w-4" />
           Reset
         </button>
       </div>
-      <div className="text-xl">
-        {mode === "pomodoro" ? "Focus Time" : "Break Time!"}
+
+      {/* Stats */}
+      <div className="text-center">
+        <p className="text-sm text-slate-600">
+          Pomodoros completed:{" "}
+          <span className="text-primary-600 font-semibold">
+            {pomodoroCount}
+          </span>
+        </p>
       </div>
-      <div className="text-sm">Pomodoros completed: {pomodoroCount}</div>
     </div>
   );
 }

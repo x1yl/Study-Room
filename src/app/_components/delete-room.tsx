@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 export function DeleteRoom({ roomId }: { roomId: string }) {
   const router = useRouter();
@@ -30,10 +31,11 @@ export function DeleteRoom({ roomId }: { roomId: string }) {
   return (
     <button
       onClick={handleDelete}
-      className="rounded-full bg-red-500/10 px-5 py-2 font-semibold text-red-500 transition hover:bg-red-500/20"
+      className="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2 font-medium text-red-700 transition-all duration-200 hover:bg-red-100"
       disabled={deleteRoom.isPending}
     >
-      {deleteRoom.isPending ? "Deleting..." : "Delete"}
+      <TrashIcon className="h-4 w-4" />
+      {deleteRoom.isPending ? "Deleting..." : "Delete Room"}
     </button>
   );
 }

@@ -1,9 +1,16 @@
 "use client";
 
-import { signIn, useSession } from "next-auth/react";
-import { api } from "~/trpc/react";
 import { useState } from "react";
-import { Settings, X } from "lucide-react";
+import { api } from "~/trpc/react";
+import { useSession, signIn } from "next-auth/react";
+import {
+  CalendarIcon,
+  ClockIcon,
+  CheckCircleIcon,
+  ExclamationTriangleIcon,
+  Cog6ToothIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 
 interface Calendar {
   id: string;
@@ -102,14 +109,49 @@ export function CalendarWidget() {
     return `event-${item.calendarId}-${item.id}`;
   };
 
+  const formatDateTime = (dateTimeString: string): string => {
+    if (!dateTimeString) return "";
+    const date = new Date(dateTimeString);
+    const now = new Date();
+    const isToday = date.toDateString() === now.toDateString();
+
+    if (isToday) {
+      return `Today, ${date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+    }
+
+    const isTomorrow =
+      new Date(now.getTime() + 24 * 60 * 60 * 1000).toDateString() ===
+      date.toDateString();
+    if (isTomorrow) {
+      return `Tomorrow, ${date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+    }
+
+    return date.toLocaleDateString([], {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   if (!session) {
     return (
-      <div className="rounded-lg bg-white/10 p-4 text-white">
-        <h3 className="mb-4 text-lg font-semibold">Calendar Events</h3>
+      <div className="py-12 text-center">
+        <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100">
+          <CalendarIcon className="h-8 w-8 text-blue-600" />
+        </div>
+        <h3 className="mb-3 text-xl font-semibold text-slate-900">
+          Connect Your Calendar
+        </h3>
+        <p className="mx-auto mb-6 max-w-md text-slate-600">
+          Sync with Google Calendar to see your upcoming events and tasks right
+          here in your study room.
+        </p>
         <button
           onClick={() => void signIn("google")}
-          className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600"
+          className="shadow-study inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-blue-700"
         >
+          <CalendarIcon className="h-5 w-5" />
           Connect Google Calendar
         </button>
       </div>
@@ -118,136 +160,176 @@ export function CalendarWidget() {
 
   if (isLoading) {
     return (
-      <div className="rounded-lg bg-white/10 p-4 text-white">
-        <h3 className="mb-4 text-lg font-semibold">Calendar Events</h3>
-        <p>Loading events...</p>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="h-6 w-32 animate-pulse rounded bg-slate-200"></div>
+          <div className="h-8 w-8 animate-pulse rounded-lg bg-slate-200"></div>
+        </div>
+        <div className="space-y-3">
+          {Array.from({ length: 3 }, (_, i) => (
+            <div key={i} className="animate-pulse rounded-lg bg-slate-50 p-4">
+              <div className="mb-2 h-4 w-3/4 rounded bg-slate-200"></div>
+              <div className="h-3 w-1/2 rounded bg-slate-200"></div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
   if (!events.length && !tasks.length) {
     return (
-      <div className="rounded-lg bg-white/10 p-4 text-white">
-        <h3 className="mb-4 text-lg font-semibold">Calendar Events</h3>
-        <p>No events found or calendar not connected.</p>
+      <div className="py-12 text-center">
+        <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100">
+          <ExclamationTriangleIcon className="h-8 w-8 text-slate-400" />
+        </div>
+        <h3 className="mb-3 text-xl font-semibold text-slate-900">
+          No Events Found
+        </h3>
+        <p className="mx-auto mb-6 max-w-md text-slate-600">
+          No upcoming events or tasks found in your calendar. Make sure your
+          calendar is connected and has events.
+        </p>
         <button
           onClick={() => void signIn("google")}
-          className="mt-2 rounded-sm bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600"
+          className="shadow-study inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-blue-700"
         >
-          Connect Google Calendar
+          <CalendarIcon className="h-5 w-5" />
+          Reconnect Calendar
         </button>
       </div>
     );
   }
 
   return (
-    <div className="max-h-96 overflow-y-auto rounded-lg bg-white/10 p-4 text-white">
-      <div className="sticky top-0 mb-4 flex items-center justify-between bg-[#2e026d] py-2">
-        <h3 className="text-lg font-semibold">
-          Upcoming Items ({sortedItems.length})
-        </h3>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="bg-primary-100 flex h-8 w-8 items-center justify-center rounded-lg">
+            <CalendarIcon className="text-primary-600 h-4 w-4" />
+          </div>
+          <h3 className="text-lg font-semibold text-slate-900">
+            Upcoming Items ({sortedItems.length})
+          </h3>
+        </div>
         <button
           onClick={() => setShowSettings(!showSettings)}
-          className="rounded-full p-1 hover:bg-white/10"
+          className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-all duration-200 hover:bg-slate-100 hover:text-slate-600"
           title="Settings"
         >
-          {showSettings ? <X size={20} /> : <Settings size={20} />}
+          {showSettings ? (
+            <XMarkIcon className="h-4 w-4" />
+          ) : (
+            <Cog6ToothIcon className="h-4 w-4" />
+          )}
         </button>
       </div>
 
+      {/* Settings Panel */}
       {showSettings && (
-        <div className="mb-4 rounded-lg bg-white/5 p-3">
-          <div className="mb-3">
-            <label className="flex items-center space-x-2">
+        <div className="animate-slide-up space-y-4 rounded-xl bg-slate-50 p-4">
+          <div>
+            <label className="flex items-center gap-3">
               <input
                 type="checkbox"
                 checked={showTasks}
                 onChange={(e) => setShowTasks(e.target.checked)}
-                className="rounded"
+                className="text-primary-600 focus:ring-primary-500 rounded border-slate-300"
               />
-              <span>Show Tasks</span>
+              <span className="text-sm font-medium text-slate-700">
+                Show Tasks
+              </span>
             </label>
           </div>
-          <div className="space-y-2">
-            <h4 className="font-medium">Calendars</h4>
-            {calendars.map((cal) => (
-              <label key={cal.id} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={!hiddenCalendars.has(cal.id)}
-                  onChange={() => {
-                    const newHidden = new Set(hiddenCalendars);
-                    if (hiddenCalendars.has(cal.id)) {
-                      newHidden.delete(cal.id);
-                    } else {
-                      newHidden.add(cal.id);
-                    }
-                    setHiddenCalendars(newHidden);
-                  }}
-                  className="rounded"
-                />
-                <span className="flex items-center space-x-2">
-                  <span
-                    className="h-3 w-3 rounded-full"
-                    style={{
-                      backgroundColor: cal.backgroundColor ?? "#4285f4",
-                    }}
-                  ></span>
-                  <span>{cal.summary}</span>
-                </span>
-              </label>
-            ))}
-          </div>
+
+          {calendars.length > 0 && (
+            <div>
+              <h4 className="mb-2 text-sm font-medium text-slate-700">
+                Calendars
+              </h4>
+              <div className="space-y-2">
+                {calendars.map((calendar) => (
+                  <label key={calendar.id} className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={!hiddenCalendars.has(calendar.id)}
+                      onChange={(e) => {
+                        const newHidden = new Set(hiddenCalendars);
+                        if (e.target.checked) {
+                          newHidden.delete(calendar.id);
+                        } else {
+                          newHidden.add(calendar.id);
+                        }
+                        setHiddenCalendars(newHidden);
+                      }}
+                      className="text-primary-600 focus:ring-primary-500 rounded border-slate-300"
+                    />
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="h-3 w-3 rounded-full"
+                        style={{ backgroundColor: calendar.backgroundColor }}
+                      />
+                      <span className="text-sm text-slate-700">
+                        {calendar.summary}
+                      </span>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
-      <div className="flex flex-col gap-2">
-        {items.map((item) => (
+      {/* Events List */}
+      <div className="max-h-80 space-y-3 overflow-y-auto">
+        {items.slice(0, 10).map((item) => (
           <div
             key={getItemKey(item)}
-            className="rounded-md bg-white/5 p-3 hover:bg-white/10"
-            style={{
-              borderLeft: `4px solid ${
-                "type" in item
-                  ? "#db4437" // Task color
-                  : (item.backgroundColor ?? "#4285f4") // Calendar color
-              }`,
-            }}
+            className="rounded-lg border border-slate-200 bg-slate-50 p-4 transition-colors duration-200 hover:bg-slate-100"
           >
-            <div className="flex items-start justify-between">
-              <h4 className="font-medium">
-                {"type" in item ? item.title : item.summary}
-              </h4>
-              <span className="text-xs text-gray-400">
-                {"type" in item ? item.listTitle : item.calendarTitle}
-              </span>
-            </div>
-            <p className="text-sm text-gray-300">
-              {"type" in item
-                ? item.due
-                  ? `${(new Date(item.due).getUTCMonth() + 1).toString().padStart(2, "0")}/${new Date(item.due).getUTCDate().toString().padStart(2, "0")}/${new Date(item.due).getUTCFullYear()}`
-                  : "No due date"
-                : item.start?.dateTime
-                  ? `${new Date(item.start.dateTime).toLocaleString()} - ${new Date(item.end?.dateTime ?? "").toLocaleString()}`
-                  : item.start?.date
-                    ? `${(new Date(item.start.date).getUTCMonth() + 1).toString().padStart(2, "0")}/${new Date(item.start.date).getUTCDate().toString().padStart(2, "0")}/${new Date(item.start.date).getUTCFullYear()}`
-                    : "No date"}
-            </p>
-            {!("type" in item) && (
-              <>
-                {item.description && (
-                  <p className="mt-1 text-sm text-gray-400">
-                    {item.description}
+            <div className="flex items-start gap-3">
+              <div className="mt-1 flex-shrink-0">
+                {isTaskItem(item) ? (
+                  <CheckCircleIcon className="h-4 w-4 text-green-600" />
+                ) : (
+                  <div
+                    className="h-3 w-3 rounded-full"
+                    style={{ backgroundColor: item.backgroundColor }}
+                  />
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <h4 className="truncate font-medium text-slate-900">
+                  {isTaskItem(item) ? item.title : item.summary}
+                </h4>
+                <div className="mt-1 flex items-center gap-2">
+                  <ClockIcon className="h-3 w-3 text-slate-400" />
+                  <span className="text-xs text-slate-500">
+                    {formatDateTime(getItemDateTime(item))}
+                  </span>
+                </div>
+                {!isTaskItem(item) && item.location && (
+                  <p className="mt-1 truncate text-xs text-slate-500">
+                    📍 {item.location}
                   </p>
                 )}
-                {item.location && (
-                  <p className="mt-1 text-sm text-gray-400">{item.location}</p>
-                )}
-              </>
-            )}
+                <div className="mt-1 text-xs text-slate-400">
+                  {isTaskItem(item) ? item.listTitle : item.calendarTitle}
+                </div>
+              </div>
+            </div>
           </div>
         ))}
-        {items.length === 0 && <p>No upcoming items</p>}
+
+        {items.length > 10 && (
+          <div className="py-3 text-center">
+            <span className="text-sm text-slate-500">
+              and {items.length - 10} more items...
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

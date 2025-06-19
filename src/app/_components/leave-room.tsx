@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
+import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/outline";
 
 export function LeaveRoom({ roomId }: { roomId: string }) {
   const router = useRouter();
@@ -26,9 +27,10 @@ export function LeaveRoom({ roomId }: { roomId: string }) {
   return (
     <button
       onClick={handleLeave}
-      className="rounded-full bg-white/10 px-5 py-2 font-semibold transition hover:bg-white/20"
+      className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-100 px-4 py-2 font-medium text-slate-700 transition-all duration-200 hover:bg-slate-200"
       disabled={removeMember.isPending}
     >
+      <ArrowLeftEndOnRectangleIcon className="h-4 w-4" />
       {removeMember.isPending ? "Leaving..." : "Leave Room"}
     </button>
   );

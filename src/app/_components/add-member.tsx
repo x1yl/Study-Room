@@ -27,18 +27,18 @@ export function AddMember({ roomId }: { roomId: string }) {
         e.preventDefault();
         addMember.mutate({ roomId, username });
       }}
-      className="flex gap-2"
+      className="flex gap-3"
     >
       <input
         type="text"
-        placeholder="Username"
+        placeholder="Enter username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        className="w-full rounded-full px-4 py-2 text-black"
+        className="focus:ring-primary-500 flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2 text-slate-900 placeholder-slate-500 transition-all duration-200 focus:border-transparent focus:ring-2 focus:outline-none"
       />
       <button
         type="submit"
-        className="rounded-full bg-white/10 px-6 py-2 font-semibold transition hover:bg-white/20"
+        className="bg-primary-600 text-slate-650 hover:bg-primary-700 transform rounded-xl px-6 py-2 font-semibold shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
         disabled={addMember.isPending}
       >
         {addMember.isPending ? "Adding..." : "Add"}

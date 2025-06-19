@@ -307,7 +307,7 @@ export const roomRouter = createTRPCRouter({
       return ctx.db.message.findMany({
         where: { roomId: input.roomId },
         include: { user: true },
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: "asc" }, // Changed to asc so oldest messages come first
         take: 100,
       });
     }),
